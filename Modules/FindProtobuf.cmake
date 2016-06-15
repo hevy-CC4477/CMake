@@ -139,6 +139,10 @@ function(PROTOBUF_GENERATE_CPP SRCS HDRS)
     endforeach()
   endif()
 
+  if (MSVC AND DEFINED Protobuf_DLLEXPORT)
+    set(Protobuf_DLLEXPORT "=dllexport_decl=${Protobuf_DLLEXPORT}:")
+  endif ()
+
   set(${SRCS})
   set(${HDRS})
   foreach(FIL ${ARGN})
@@ -156,7 +160,7 @@ function(PROTOBUF_GENERATE_CPP SRCS HDRS)
       OUTPUT "${CMAKE_CURRENT_BINARY_DIR}/${FIL_WE}.pb.cc"
              "${CMAKE_CURRENT_BINARY_DIR}/${FIL_WE}.pb.h"
       COMMAND  ${Protobuf_PROTOC_EXECUTABLE}
-      ARGS --cpp_out  ${CMAKE_CURRENT_BINARY_DIR} ${_protobuf_include_path} ${ABS_FIL}
+      ARGS --cpp_out ${Protobuf_DLLEXPORT}${CMAKE_CURRENT_BINARY_DIR} ${_protobuf_include_path} ${ABS_FIL}
       DEPENDS ${ABS_FIL} ${Protobuf_PROTOC_EXECUTABLE}
       COMMENT "Running C++ protocol buffer compiler on ${FIL}"
       VERBATIM )
